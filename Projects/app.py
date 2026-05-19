@@ -273,7 +273,8 @@ st.markdown("""
 def load_assets():
     """Load model, scaler and feature columns from disk."""
     assets = {}
-    models_dir = Path("models")
+    # Check both locations — models/ folder or root directory
+    models_dir = Path("models") if Path("models").exists() else Path(".")
 
     if not models_dir.exists():
         return None
