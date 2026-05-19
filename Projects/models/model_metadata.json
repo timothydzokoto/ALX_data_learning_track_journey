@@ -1,0 +1,44 @@
+{
+  "dimensions": [
+    "Mind",
+    "Energy",
+    "Nature",
+    "Tactics"
+  ],
+  "best_models": {
+    "Mind": "LinearSVC",
+    "Energy": "LinearSVC",
+    "Nature": "LogisticRegression",
+    "Tactics": "LinearSVC"
+  },
+  "performance": {
+    "Mind": {
+      "accuracy": 0.0,
+      "f1_score": 0.0,
+      "baseline": 0.768
+    },
+    "Energy": {
+      "accuracy": 0.0,
+      "f1_score": 0.0,
+      "baseline": 0.8625
+    },
+    "Nature": {
+      "accuracy": 0.0,
+      "f1_score": 0.0,
+      "baseline": 0.5407
+    },
+    "Tactics": {
+      "accuracy": 0.616,
+      "f1_score": 0.6117,
+      "baseline": 0.6045
+    }
+  },
+  "tfidf_settings": {
+    "max_features": 5000,
+    "ngram_range": "(1, 2)",
+    "min_df": 2,
+    "max_df": 0.95
+  },
+  "full_type_accuracy": 0.0,
+  "training_samples": 6506
+}
