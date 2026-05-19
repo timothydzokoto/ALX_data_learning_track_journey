@@ -273,8 +273,8 @@ st.markdown("""
 def load_assets():
     """Load model, scaler and feature columns from disk."""
     assets = {}
-    # Check both locations — models/ folder or root directory
-    models_dir = Path("models") if Path("models").exists() else Path(".")
+    # Use file location as base path — works on both local and Streamlit Cloud
+    models_dir = Path(__file__).parent / "models"
 
     if not models_dir.exists():
         return None
