@@ -13,18 +13,18 @@
   },
   "performance": {
     "Mind": {
-      "accuracy": 0.0,
-      "f1_score": 0.0,
+      "accuracy": 0.7473,
+      "f1_score": 0.7234,
       "baseline": 0.768
     },
     "Energy": {
-      "accuracy": 0.0,
-      "f1_score": 0.0,
+      "accuracy": 0.8533,
+      "f1_score": 0.8213,
       "baseline": 0.8625
     },
     "Nature": {
-      "accuracy": 0.0,
-      "f1_score": 0.0,
+      "accuracy": 0.7734,
+      "f1_score": 0.7735,
       "baseline": 0.5407
     },
     "Tactics": {
@@ -39,6 +39,6 @@
     "min_df": 2,
     "max_df": 0.95
   },
-  "full_type_accuracy": 0.0,
+  "full_type_accuracy": 0.1111,
   "training_samples": 6506
 }
