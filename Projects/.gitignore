@@ -1,0 +1,3 @@
+# .gitignore for Projects repository
+# Ignore the cleaned MBTI dataset
+mbti_cleaned

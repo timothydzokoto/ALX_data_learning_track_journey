@@ -1198,4 +1198,4 @@ streamlit run titanic_app.py
             Data Science Portfolio Project<br>
             <span style="color:#4a7fa5">Classification · Feature Engineering · Streamlit</span>
         </div>
-        """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)    
