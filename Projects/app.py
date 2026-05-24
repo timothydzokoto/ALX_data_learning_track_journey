@@ -350,38 +350,95 @@ else:
     """, unsafe_allow_html=True)
 
 
+# Add this at the top of your sidebar section
+st.sidebar.markdown('<p class="section-label">🧪 Test Presets</p>', unsafe_allow_html=True)
+
+presets = {
+    "🇬🇭 Ghana (Small Nation)": {
+        'year': 2020, 'co2': 14.0, 'co2_per_capita': 0.5,
+        'coal_co2': 1.0, 'oil_co2': 8.0, 'gas_co2': 3.0,
+        'methane': 20.0, 'nitrous_oxide': 10.0,
+        'ghg_per_capita': 2.5, 'cumulative_co2': 0.5,
+        'energy_per_capita': 3000.0, 'population': 32.0
+    },
+    "🌿 High Methane Nation": {
+        'year': 2018, 'co2': 40.0, 'co2_per_capita': 8.0,
+        'coal_co2': 5.0, 'oil_co2': 20.0, 'gas_co2': 10.0,
+        'methane': 600.0, 'nitrous_oxide': 200.0,
+        'ghg_per_capita': 15.0, 'cumulative_co2': 2.0,
+        'energy_per_capita': 40000.0, 'population': 5.0
+    },
+    "🇺🇸 Major Emitter (USA)": {
+        'year': 2020, 'co2': 5000.0, 'co2_per_capita': 15.0,
+        'coal_co2': 1000.0, 'oil_co2': 2000.0, 'gas_co2': 1500.0,
+        'methane': 800.0, 'nitrous_oxide': 300.0,
+        'ghg_per_capita': 20.0, 'cumulative_co2': 400.0,
+        'energy_per_capita': 80000.0, 'population': 330.0
+    },
+    "🕰️ Early Industrial (1920s)": {
+        'year': 1920, 'co2': 80.0, 'co2_per_capita': 1.5,
+        'coal_co2': 70.0, 'oil_co2': 8.0, 'gas_co2': 2.0,
+        'methane': 40.0, 'nitrous_oxide': 15.0,
+        'ghg_per_capita': 2.0, 'cumulative_co2': 3.0,
+        'energy_per_capita': 5000.0, 'population': 50.0
+    }
+}
+
+# Preset buttons
+for label, values in presets.items():
+    if st.sidebar.button(label):
+        st.session_state['preset'] = values
+        st.rerun()
+
 # ── Sidebar — Input Controls ───────────────────────────────
+# with st.expander("⚙️ Set Input Parameters", expanded=True): # optional expander inputs goes on main page
 with st.sidebar:
     st.markdown('<p class="section-label">⚙️ Input Parameters</p>', unsafe_allow_html=True)
     st.markdown("Adjust the sliders to set emission values for prediction.")
     st.markdown("---")
 
+
+    p = st.session_state.get('preset', {})
+
     st.markdown('<p class="section-label">📅 Time</p>', unsafe_allow_html=True)
-    year = st.slider("Year", min_value=1900, max_value=2023, value=2020, step=1)
+    year = st.slider("Year", 1900, 2023,
+                  value=p.get('year', 2020))
     decade = (year // 10) * 10
+
 
     st.markdown("---")
     st.markdown('<p class="section-label">💨 CO2 Emissions</p>', unsafe_allow_html=True)
-    co2 = st.slider("Total CO2 (Mt)", 0.0, 12000.0, 500.0, step=10.0)
-    co2_per_capita = st.slider("CO2 Per Capita (t)", 0.0, 40.0, 4.5, step=0.1)
-    coal_co2 = st.slider("Coal CO2 (Mt)", 0.0, 8000.0, 150.0, step=10.0)
-    oil_co2 = st.slider("Oil CO2 (Mt)", 0.0, 4000.0, 120.0, step=10.0)
-    gas_co2 = st.slider("Gas CO2 (Mt)", 0.0, 3000.0, 80.0, step=10.0)
+    co2 = st.slider("Total CO2 (Mt)", 0.0, 12000.0,
+                 value=float(p.get('co2', 500.0)))
+    co2_per_capita = st.slider("CO2 Per Capita (t)", 0.0, 40.0,
+                             value=float(p.get('co2_per_capita', 4.5)), step=0.1)
+    coal_co2 = st.slider("Coal CO2 (Mt)", 0.0, 8000.0,
+                        value=float(p.get('coal_co2', 150.0)), step=10.0)
+    oil_co2 = st.slider("Oil CO2 (Mt)", 0.0, 4000.0,
+                       value=float(p.get('oil_co2', 120.0)), step=10.0)
+    gas_co2 = st.slider("Gas CO2 (Mt)", 0.0, 3000.0,
+                       value=float(p.get('gas_co2', 80.0)), step=10.0)
 
     st.markdown("---")
     st.markdown('<p class="section-label">🌿 Other GHG</p>', unsafe_allow_html=True)
-    methane = st.slider("Methane (Mt CO2eq)", 0.0, 3000.0, 200.0, step=10.0)
-    nitrous_oxide = st.slider("Nitrous Oxide (Mt CO2eq)", 0.0, 1000.0, 80.0, step=5.0)
-    ghg_per_capita = st.slider("GHG Per Capita (t CO2eq)", 0.0, 80.0, 10.0, step=0.5)
+    methane = st.slider("Methane (Mt CO2eq)", 0.0, 3000.0,
+                       value=float(p.get('methane', 200.0)), step=10.0)
+    nitrous_oxide = st.slider("Nitrous Oxide (Mt CO2eq)", 0.0, 1000.0,
+                             value=float(p.get('nitrous_oxide', 80.0)), step=5.0)
+    ghg_per_capita = st.slider("GHG Per Capita (t CO2eq)", 0.0, 80.0,
+                              value=float(p.get('ghg_per_capita', 10.0)), step=0.5)
 
     st.markdown("---")
     st.markdown('<p class="section-label">🏭 Cumulative Emissions</p>', unsafe_allow_html=True)
-    cumulative_co2 = st.slider("Cumulative CO2 (Gt)", 0.0, 500.0, 20.0, step=1.0)
+    cumulative_co2 = st.slider("Cumulative CO2 (Gt)", 0.0, 500.0,
+                              value=float(p.get('cumulative_co2', 20.0)), step=1.0)
 
     st.markdown("---")
     st.markdown('<p class="section-label">⚡ Energy</p>', unsafe_allow_html=True)
-    energy_per_capita = st.slider("Energy Per Capita (kWh)", 0.0, 100000.0, 30000.0, step=500.0)
-    population = st.slider("Population (millions)", 0.1, 1500.0, 50.0, step=1.0)
+    energy_per_capita = st.slider("Energy Per Capita (kWh)", 0.0, 100000.0,
+                                 value=float(p.get('energy_per_capita', 30000.0)), step=500.0)
+    population = st.slider("Population (millions)", 0.1, 1500.0,
+                          value=float(p.get('population', 50.0)), step=1.0)
 
     st.markdown("---")
     predict_btn = st.button("🔮 PREDICT TEMPERATURE CHANGE")
@@ -783,7 +840,7 @@ streamlit run app.py
         st.markdown("""
         <div style="font-family:monospace;font-size:0.8rem;color:var(--muted)">
         Data Science Portfolio Project<br>
-        <span style="color:var(--accent)">GES ICT Teacher → Data Scientist</span><br>
+        <span style="color:var(--accent)">Timothy Dzokoto → Data Scientist</span><br>
         Built with Python · Scikit-learn · Streamlit
         </div>
         """, unsafe_allow_html=True)
