@@ -3,10 +3,21 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+import sys
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
 from pathlib import Path
+
+
+def register_sklearn_pickle_compat_modules():
+    """Map old sklearn Cython extension names used by saved joblib models."""
+    try:
+        import sklearn._loss._loss as sklearn_loss_ext
+    except Exception:
+        return
+
+    sys.modules.setdefault("_loss", sklearn_loss_ext)
 
 # ── Page Config ────────────────────────────────────────────
 st.set_page_config(
@@ -282,7 +293,11 @@ def load_assets():
     # Find model file
     model_files = list(models_dir.glob("tuned_model_*.pkl")) + list(models_dir.glob("best_model_*.pkl"))
     if model_files:
-        assets['model'] = joblib.load(model_files[0])
+        try:
+            register_sklearn_pickle_compat_modules()
+            assets['model'] = joblib.load(model_files[0])
+        except Exception as exc:
+            return {"load_error": f"Could not load model file {model_files[0].name}: {exc}"}
         assets['model_name'] = model_files[0].stem.replace('tuned_model_', '').replace('best_model_', '').replace('_', ' ').title()
     else:
         return None
@@ -290,14 +305,20 @@ def load_assets():
     # Load scaler
     scaler_path = models_dir / "scaler.pkl"
     if scaler_path.exists():
-        assets['scaler'] = joblib.load(scaler_path)
+        try:
+            assets['scaler'] = joblib.load(scaler_path)
+        except Exception as exc:
+            return {"load_error": f"Could not load scaler.pkl: {exc}"}
     else:
         return None
 
     # Load feature columns
     features_path = models_dir / "feature_columns.pkl"
     if features_path.exists():
-        assets['features'] = joblib.load(features_path)
+        try:
+            assets['features'] = joblib.load(features_path)
+        except Exception as exc:
+            return {"load_error": f"Could not load feature_columns.pkl: {exc}"}
     else:
         return None
 
@@ -318,10 +339,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Model Status ───────────────────────────────────────────
-if assets is None:
+if assets is None or "load_error" in assets:
     st.markdown("""
     <div class="warn-box">
-    ⚠️ MODEL FILES NOT FOUND — Place your model files in a <code>models/</code> folder 
+    ⚠️ MODEL FILES NOT AVAILABLE — Place your model files in a <code>models/</code> folder 
     in the same directory as this app. Required: tuned_model_*.pkl, scaler.pkl, feature_columns.pkl
     </div>
     """, unsafe_allow_html=True)
@@ -338,6 +359,8 @@ if assets is None:
     """, unsafe_allow_html=True)
 
     st.info("Running in **DEMO MODE** — predictions use a simulated model for demonstration purposes.")
+    if assets and "load_error" in assets:
+        st.error(assets["load_error"])
     DEMO_MODE = True
 else:
     DEMO_MODE = False
