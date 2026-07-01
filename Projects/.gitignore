@@ -1,3 +1,7 @@
 # .gitignore for Projects repository
 # Ignore the cleaned MBTI dataset
 mbti_cleaned
+
+# Large local model artifacts downloaded at runtime
+.model_cache/
+models/movie_recommender_deploy_bundle.joblib
